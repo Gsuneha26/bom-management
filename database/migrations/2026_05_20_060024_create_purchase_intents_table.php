@@ -12,13 +12,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('purchase_intents', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('batch_id')->nullable();
+           $table->id();
+
+           $table->foreignId('batch_id')
+                ->constrained('purchase_intent_batches')
+                ->cascadeOnDelete();
+
+            $table->foreignId('bom_line_item_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
             $table->string('item_code')->nullable();
-            $table->integer('required_qty')->default(0);
-            $table->integer('available_qty')->default(0);
-            $table->integer('shortfall_qty')->default(0);
-            $table->string('priority')->nullable();
+
+            $table->text('description')->nullable();
+
+            $table->decimal('required_qty', 12, 2)->default(0);
+
+            $table->decimal('available_qty', 12, 2)->default(0);
+
+            $table->decimal('shortfall_qty', 12, 2)->default(0);
+
+            $table->string('priority')->default('Medium');
+
+            $table->string('status')
+                ->default('Pending');
+
             $table->timestamps();
         });
     }

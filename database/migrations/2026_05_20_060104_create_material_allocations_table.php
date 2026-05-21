@@ -13,11 +13,25 @@ return new class extends Migration
     {
         Schema::create('material_allocations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('bom_line_item_id');
+
+            $table->foreignId('bom_line_item_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
             $table->string('item_code')->nullable();
-            $table->integer('allocated_qty')->default(0);
+
+            $table->text('description')->nullable();
+
+            $table->decimal('allocated_qty', 12, 2)->default(0);
+
             $table->string('allocated_to')->nullable();
-            $table->string('allocated_by')->nullable();
+
+            $table->string('allocated_by')
+                ->default('System - Auto');
+
+            $table->timestamp('allocated_at')
+                ->nullable();
+
             $table->timestamps();
         });
     }

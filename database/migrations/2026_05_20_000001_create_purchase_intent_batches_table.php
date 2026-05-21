@@ -12,18 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('purchase_intent_batches', function (Blueprint $table) {
+             $table->engine = 'InnoDB';
+
             $table->id();
-            $table->foreignId('bom_header_id')->constrained()->cascadeOnDelete();
-            $table->string('batch_reference')->unique();
-            $table->integer('total_items')->default(0);
-            $table->decimal('total_shortfall_qty', 12, 2)->default(0);
-            $table->enum('status', [
-                'pending',
-                'processing',
-                'completed'
-            ])->default('pending');
-            $table->string('created_by')
-                ->default('System');
+
+            $table->foreignId('bom_header_id')
+                ->constrained('purchase_intent_batches')
+                ->cascadeOnDelete();
+
+            $table->string('batch_reference');
+
             $table->timestamps();
         });
     }

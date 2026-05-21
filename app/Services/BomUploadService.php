@@ -6,6 +6,7 @@ use App\Models\BomHeader;
 use App\Models\BomLineItem;
 use App\Imports\BomImport;
 use App\Imports\BomLineImport;
+use App\Jobs\ProcessBomInventoryJob;
 
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -38,10 +39,13 @@ class BomUploadService
             foreach ($rows as $row) {
 
                 // Skip empty rows
-                if (empty($row[0])) {
+                if (
+                    empty($row[0]) ||
+                    empty($row[1]) ||
+                    !is_numeric(str_replace('.', '', $row[0]))
+                ) {
                     continue;
                 }
-                
                 BomLineItem::create([
 
                     'bom_header_id' => $bom->id,
@@ -50,18 +54,27 @@ class BomUploadService
 
                     'description' => $row[1] ?? null,
 
-                    'unit' => $row[6] ?? null,
+                    'part_number' => $row[2] ?? null,
+
+                    'specifications' => $row[3] ?? null,
+
+                    'size_of_material' => $row[4] ?? null,
 
                     'required_qty' => is_numeric($row[5])
                         ? $row[5]
                         : 0,
 
-                    'specifications' => $row[3] ?? null,
+                    'unit' => $row[6] ?? null,
 
-                    'inventory_status' => $row[9] ?? null,
+                    'allocated_to' => $row[7] ?? null,
+
+                    'inventory_status' => null,
+
+
                 ]);
             }
 
+            ProcessBomInventoryJob::dispatch($bom->id);
             return $bom;
         });
     }

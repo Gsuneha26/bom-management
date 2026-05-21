@@ -2,26 +2,38 @@
 
 namespace App\Jobs;
 
+use App\Models\BomHeader;
+use App\Models\Inventory;
+use App\Models\MaterialAllocation;
+use App\Models\PurchaseIntent;
+use App\Models\PurchaseIntentBatch;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+
+use App\Services\InventoryProcessingService;
 
 class ProcessBomInventoryJob implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable,
+        InteractsWithQueue,
+        Queueable,
+        SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
+    public $bomId;
+
+    public function __construct($bomId)
     {
-        //
+        $this->bomId = $bomId;
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
+    public function handle()
     {
-        //
+        app(InventoryProcessingService::class)
+        ->process($this->bomHeaderId);
     }
 }

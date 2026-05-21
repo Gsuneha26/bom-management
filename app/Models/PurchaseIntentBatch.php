@@ -14,4 +14,9 @@ class PurchaseIntentBatch extends Model
         'created_by',
         'status',
     ];
+    
+    public function intents()
+    {
+        return $this->hasMany(PurchaseIntent::class);
+    }
 }

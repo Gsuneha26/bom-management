@@ -14,4 +14,9 @@ class BomHeader extends Model
         'uploaded_by',
         'status',
     ];
+
+    public function items()
+    {
+        return $this->hasMany(BomLineItem::class);
+    }
 }
