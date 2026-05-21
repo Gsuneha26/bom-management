@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('bom_header_id');
             $table->string('item_code');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('required_qty')->default(0);
             $table->string('unit')->nullable();
             $table->text('specifications')->nullable();
             $table->string('allocated_to')->nullable();
             $table->string('inventory_status')->nullable();
+            $table->string('part_number')->nullable();
+            $table->string('size_of_material')->nullable();
             $table->timestamps();
         });
     }

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->string('bom_reference');
-            $table->string('version');
-            $table->string('uploaded_by');
+            $table->string('version')->nullable();
+            $table->string('uploaded_by')->nullable();
             $table->string('file_name');
             $table->string('status')->default('pending');
             $table->timestamps();

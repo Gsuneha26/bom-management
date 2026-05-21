@@ -5,6 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
-{
-    //
+{   
+    protected $fillable = [
+        'item_code',
+        'description',
+        'available_qty',
+        'unit',
+        'reserved_qty',
+    ];
 }
