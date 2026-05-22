@@ -16,6 +16,10 @@ class BomController extends Controller
 {
     public function index()
     {
+        if (! auth()->check() || ! auth()->user()->hasAnyRole(['Admin', 'Engineer', 'Store Manager', 'Purchase Dept'])) {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to access the dashboard.');
+        }
+
         $boms = BomHeader::latest()
             ->withCount('items')
             ->get();
@@ -29,15 +33,22 @@ class BomController extends Controller
 
     public function store(UploadBomRequest $request, BomUploadService $service)
     {
+        if (! auth()->check() || ! auth()->user()->hasAnyRole(['Admin', 'Engineer', 'Store Manager'])) {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to upload a BOM.');
+        }
+
         $bom = $service->upload($request);
 
-        return response()->json([
-            'message' => 'BOM uploaded successfully',
-            'data' => $bom,
-        ]);
+        return redirect()
+            ->route('bom.show', $bom->id)
+            ->with('success', 'BOM uploaded successfully and inventory processing has started.');
     }
 
     public function show($id) {
+        if (! auth()->check() || ! auth()->user()->hasAnyRole(['Admin', 'Engineer', 'Store Manager'])) {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to view this BOM.');
+        }
+
         $bom = BomHeader::findOrFail($id);
 
         $items = BomLineItem::where('bom_header_id', $id)

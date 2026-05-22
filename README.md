@@ -147,7 +147,8 @@ Header row (first row) should contain these columns (case-insensitive):
 - `Specification` or `Material Grade`
 - `Allocated To` (Department or Role)
 
-If your source files name columns differently, update `app/Imports/BomImport.php` mapping to match the header names.
+This importer also accepts common synonyms such as `Qty`, `Quantity`, `Size`, `Material Grade`, and `Department`.
+If your source files use different headings, the import logic can be extended in `app/Services/Bom/BomUploadService.php` and `app/Imports/BomImport.php`.
 
 ----
 
@@ -161,6 +162,8 @@ These routes are defined in [routes/web.php](routes/web.php). Example actions / 
 - `GET /purchase-intents` — List purchase intents
 - `GET /allocations` — List material allocations
 
+> Note: These are currently web routes with role-based access. The code is ready to be extended into a dedicated JSON API group for mobile or integration clients.
+
 cURL example to upload a BOM (requires authentication cookie or token):
 
 ```bash
@@ -173,22 +176,37 @@ For API/mobile integration, extend these routes into an authenticated API group 
 
 ## Roles & Testing Credentials
 
-This project expects role-based access (Admin, Purchase, Engineer, Store Manager). If seeders include role and user creation they will be created by `--seed`.
+This project uses Spatie role-based authorization. The database seeder now creates the required roles and test users automatically.
 
-If no seeders are present, create a simple admin user:
+Default seeded users:
+
+- Admin: `admin@example.com` / `password`
+- Purchase Dept: `purchase@example.com` / `password`
+- Engineer: `engineer@example.com` / `password`
+- Store Manager: `store@example.com` / `password`
+
+Run the seeders with:
+
+```bash
+php artisan db:seed
+```
+
+If you want to add additional users, use Tinker and assign a role:
 
 ```bash
 php artisan tinker
->>> \\App\\Models\\User::factory()->create([ 'email' => 'admin@example.com', 'password' => bcrypt('password') ]);
+>>> $user = App\Models\User::factory()->create([
+...    'email' => 'newuser@example.com',
+...    'password' => bcrypt('password'),
+...]);
+>>> $user->assignRole('Engineer');
 ```
 
-Then assign roles according to your role implementation (Spatie/Policies). Example with Spatie (if installed):
+Route access is restricted by role in the controller and middleware:
 
-```php
-$user->assignRole('admin');
-```
-
-Login with the created user to access the upload UI.
+- Dashboard, upload, BOM detail: `Admin`, `Engineer`, `Store Manager`, `Purchase Dept`
+- Purchase intents: `Admin`, `Purchase Dept`
+- Allocations: `Admin`, `Store Manager`
 
 ----
 
@@ -206,12 +224,24 @@ If tests require services (Redis, database), ensure `.env.testing` or testing DB
 
 ----
 
+## Assignment coverage
+
+This repository now includes the following completed features:
+
+- Dashboard card summaries for BOM / inventory / purchase intent metrics
+- BOM upload with Excel/CSV support, header validation, and queued processing
+- BOM detail view with pagination on `/bom/{id}`
+- Role-based access controls using Spatie roles and controller/middleware guards
+- Notification functionality for purchase intent creation and department notification
+- Seeders for roles and users, ready for testing with default credentials
+
 ## Troubleshooting
 
 - Laravel logs: `storage/logs/laravel.log`. Tail the file to observe runtime errors.
 - File permissions: make sure `storage/` and `bootstrap/cache` are writable by the PHP process.
 - If imports fail due to Excel parsing, ensure `maatwebsite/excel` is installed and `php_zip` / `ext-xml` extensions are enabled.
 - If queued jobs don't run: verify `QUEUE_CONNECTION` in `.env`, run `php artisan queue:work` and check `failed_jobs` table.
+- If role-based pages are visible to unauthorized users, ensure seeded roles exist and the current user has been assigned one of the allowed roles.
 
 Common commands for debugging:
 

@@ -23,6 +23,12 @@
             </div>
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    @if(session('success'))
+                        <div class="mb-4 rounded-md bg-green-50 p-4 text-green-800 dark:bg-green-900 dark:text-green-100">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
                     <form action="{{ route('bom.upload') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="file" name="file" id="bom-file" class="border border-gray-300 rounded-md p-2 w-full">
