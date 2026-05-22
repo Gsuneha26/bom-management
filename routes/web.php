@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BomController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PurchaseIntentController;
 use App\Http\Controllers\MaterialAllocationController;
 use App\Http\Middleware\RequireRole;
@@ -31,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/purchase-intents', [PurchaseIntentController::class, 'index'])
         ->middleware(RequireRole::class . ':Admin|Purchase Dept')
         ->name('purchase.intents');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
 
     Route::get('/allocations', [MaterialAllocationController::class, 'index'])
         ->middleware(RequireRole::class . ':Admin|Store Manager')

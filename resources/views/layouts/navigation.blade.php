@@ -21,6 +21,15 @@
                         {{ __('Purchase Intents') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
+                    @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
+                    <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
+                        {{ __('Notifications') }}
+                        @if($unreadCount)
+                            <span class="ml-2 inline-flex items-center rounded-full bg-red-600 px-2 py-0.5 text-xs font-semibold text-white">{{ $unreadCount }}</span>
+                        @endif
+                    </x-nav-link>
+                </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('material.allocations')" :active="request()->routeIs('material.allocations')">
                         {{ __('Material Allocations') }}
