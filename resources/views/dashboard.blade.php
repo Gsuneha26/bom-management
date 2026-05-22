@@ -19,7 +19,9 @@
                             </p>
                         @enderror
                         
-                        <button type="submit" class="mt-4 px-4 py-2 rounded-md">Upload BOM</button>
+                        <button type="submit" class="mt-4 px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white">
+                            Upload BOM
+                        </button>
                     </form>
                 </div>
                 <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6">

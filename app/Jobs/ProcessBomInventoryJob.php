@@ -15,7 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-use App\Services\InventoryProcessingService;
+use App\Services\Processing\BomProcessingService;
 
 class ProcessBomInventoryJob implements ShouldQueue
 {
@@ -31,9 +31,31 @@ class ProcessBomInventoryJob implements ShouldQueue
         $this->bomId = $bomId;
     }
 
-    public function handle()
+    public function handle(BomProcessingService $service)
     {
-        app(InventoryProcessingService::class)
-            ->process($this->bomId);
+        $bom = BomHeader::with('items')->findOrFail($this->bomId);
+
+        $bom->update([
+            'status' => 'processing'
+        ]);
+
+        try {
+
+            $service->process($bom);
+
+            // success
+            $bom->update([
+                'status' => 'completed'
+            ]);
+
+        } catch (\Exception $e) {
+
+            // failed
+            $bom->update([
+                'status' => 'failed'
+            ]);
+
+            throw $e;
+        }
     }
 }

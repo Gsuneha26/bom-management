@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/purchase-intents', [PurchaseIntentController::class, 'index'])
     ->name('purchase.intents');
     Route::get('/allocations',[MaterialAllocationController::class, 'index']
-    );
+    )->name('material.allocations');
 });
 
 

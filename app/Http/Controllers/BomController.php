@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\UploadBomRequest;
-use App\Services\BomUploadService;
+use App\Services\Bom\BomUploadService;
 use App\Models\BomHeader;
 use App\Models\BomLineItem;
 use App\Imports\BomImport;
