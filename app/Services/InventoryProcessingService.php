@@ -22,8 +22,21 @@ class InventoryProcessingService
 
         foreach ($bom->items as $item) {
 
-            $inventory = Inventory::where('item_code', $item->part_number)
-                ->first();
+            $partNumber = trim((string) $item->part_number);
+            $itemCode = trim((string) $item->item_code);
+            $inventory = null;
+
+            if ($partNumber !== '' || $itemCode !== '') {
+                $inventory = Inventory::where(function ($query) use ($partNumber, $itemCode) {
+                    if ($partNumber !== '') {
+                        $query->where('item_code', $partNumber);
+                    }
+
+                    if ($itemCode !== '') {
+                        $query->orWhere('item_code', $itemCode);
+                    }
+                })->first();
+            }
 
             if (!$inventory) {
 
@@ -32,7 +45,7 @@ class InventoryProcessingService
                 ]);
 
                 PurchaseIntent::create([
-                    'purchase_intent_batch_id' => $batch->id,
+                    'batch_id' => $batch->id,
                     'bom_line_item_id' => $item->id,
                     'item_code' => $item->part_number,
                     'description' => $item->description,
@@ -88,7 +101,7 @@ class InventoryProcessingService
                 }
 
                 PurchaseIntent::create([
-                    'purchase_intent_batch_id' => $batch->id,
+                    'batch_id' => $batch->id,
                     'bom_line_item_id' => $item->id,
                     'item_code' => $item->part_number,
                     'description' => $item->description,

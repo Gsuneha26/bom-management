@@ -34,6 +34,6 @@ class ProcessBomInventoryJob implements ShouldQueue
     public function handle()
     {
         app(InventoryProcessingService::class)
-        ->process($this->bomHeaderId);
+            ->process($this->bomId);
     }
 }

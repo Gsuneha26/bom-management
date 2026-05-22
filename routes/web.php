@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BomController;
+use App\Http\Controllers\PurchaseIntentController;
+use App\Http\Controllers\MaterialAllocationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +22,8 @@ Route::middleware('auth')->group(function () {
         ->name('bom.show');
     Route::get('/purchase-intents', [PurchaseIntentController::class, 'index'])
     ->name('purchase.intents');
+    Route::get('/allocations',[MaterialAllocationController::class, 'index']
+    );
 });
 
 

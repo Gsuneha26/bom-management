@@ -16,7 +16,8 @@ return new class extends Migration
 
            $table->foreignId('batch_id')
                 ->constrained('purchase_intent_batches')
-                ->cascadeOnDelete();
+                ->cascadeOnDelete()
+                ->nullable();
 
             $table->foreignId('bom_line_item_id')
                 ->constrained()

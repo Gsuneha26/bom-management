@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PurchaseIntent;
 use Illuminate\Http\Request;
 
 class PurchaseIntentController extends Controller

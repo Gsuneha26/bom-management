@@ -23,10 +23,11 @@
                     </form>
                 </div>
                 <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6">
-                    Uploaded BOMs
-                </h3>
+                    <h3 class="text-xl font-bold mb-4">
+                        Uploaded BOMs
+                    </h3>
 
-                <div class="overflow-x-auto">
+                    <div class="overflow-x-auto">
 
                     <table class="w-full border-collapse">
 
