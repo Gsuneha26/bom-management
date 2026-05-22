@@ -7,6 +7,20 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
+                <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Total BOMs Uploaded</div>
+                    <div class="mt-3 text-3xl font-semibold text-gray-900 dark:text-white">{{ $totalBoms ?? 0 }}</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Pending Purchase Intents</div>
+                    <div class="mt-3 text-3xl font-semibold text-yellow-600 dark:text-yellow-400">{{ $pendingIntents ?? 0 }}</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Allocations Made</div>
+                    <div class="mt-3 text-3xl font-semibold text-green-600 dark:text-green-400">{{ $allocationsMade ?? 0 }}</div>
+                </div>
+            </div>
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form action="{{ route('bom.upload') }}" method="POST" enctype="multipart/form-data">

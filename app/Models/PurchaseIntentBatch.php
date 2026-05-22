@@ -19,4 +19,9 @@ class PurchaseIntentBatch extends Model
     {
         return $this->hasMany(PurchaseIntent::class);
     }
+
+    public function bomHeader()
+    {
+        return $this->belongsTo(BomHeader::class);
+    }
 }

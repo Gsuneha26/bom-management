@@ -17,4 +17,12 @@ class PurchaseIntent extends Model
         'priority',
         'status',
     ];  
+
+    public function batch()
+    {
+        return $this->belongsTo(
+            PurchaseIntentBatch::class,
+            'batch_id'
+        );
+    }
 }

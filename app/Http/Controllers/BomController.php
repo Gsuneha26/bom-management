@@ -7,6 +7,8 @@ use App\Http\Requests\UploadBomRequest;
 use App\Services\Bom\BomUploadService;
 use App\Models\BomHeader;
 use App\Models\BomLineItem;
+use App\Models\PurchaseIntent;
+use App\Models\MaterialAllocation;
 use App\Imports\BomImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -18,7 +20,11 @@ class BomController extends Controller
             ->withCount('items')
             ->get();
 
-        return view('dashboard', compact('boms'));
+        $totalBoms = BomHeader::count();
+        $pendingIntents = PurchaseIntent::where('status', 'Pending')->count();
+        $allocationsMade = MaterialAllocation::count();
+
+        return view('dashboard', compact('boms', 'totalBoms', 'pendingIntents', 'allocationsMade'));
     }
 
     public function store(UploadBomRequest $request, BomUploadService $service)
@@ -35,8 +41,9 @@ class BomController extends Controller
         $bom = BomHeader::findOrFail($id);
 
         $items = BomLineItem::where('bom_header_id', $id)
-            ->get();
+            ->orderBy('id')
+            ->paginate(15);
 
-        return view('bom.show', compact('bom', 'items'));        
+        return view('bom.show', compact('bom', 'items'));
     }
 }

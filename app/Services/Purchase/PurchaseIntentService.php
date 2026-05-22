@@ -3,6 +3,8 @@
 namespace App\Services\Purchase;
 
 use App\Models\PurchaseIntent;
+use App\Models\User;
+use App\Notifications\PurchaseIntentNotification;
 
 class PurchaseIntentService
 {
@@ -11,7 +13,7 @@ class PurchaseIntentService
      */
     public function create($batchId, $item, $availableQty)
     {
-        return PurchaseIntent::create([
+        $intent = PurchaseIntent::create([
             'batch_id' => $batchId,
             'bom_line_item_id' => $item->id,
             'item_code' => $item->part_number,
@@ -20,5 +22,13 @@ class PurchaseIntentService
             'available_qty' => $availableQty,
             'shortfall_qty' => $item->required_qty - $availableQty,
         ]);
+
+        $purchaseUsers = User::role('Purchase Dept')->get();
+
+        foreach ($purchaseUsers as $user) {
+            $user->notify(
+                new PurchaseIntentNotification($intent)
+            );
+        }
     }
 }
